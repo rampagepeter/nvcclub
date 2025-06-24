@@ -27,18 +27,30 @@ if [[ $EUID -eq 0 ]]; then
 fi
 
 # 获取用户输入
+echo -e "${YELLOW}⚠️  系统更新提醒:${NC}"
+echo "系统更新可能会影响服务器上运行的其他应用"
+read -p "🔄 是否更新系统？(y/N，默认不更新): " UPDATE_SYSTEM
+UPDATE_SYSTEM=${UPDATE_SYSTEM:-n}
+
 read -p "🌐 请输入您的域名 (例如: nvcclub.com，留空则使用IP访问): " DOMAIN
 read -p "📁 项目安装目录 [/var/www/nvcclub]: " INSTALL_DIR
 INSTALL_DIR=${INSTALL_DIR:-/var/www/nvcclub}
 
 echo -e "${BLUE}开始部署，配置信息：${NC}"
+echo "  更新系统: ${UPDATE_SYSTEM}"
 echo "  域名: ${DOMAIN:-"IP访问"}"
 echo "  安装目录: $INSTALL_DIR"
 echo
 
-# 1. 更新系统
-echo -e "${YELLOW}📦 正在更新系统...${NC}"
-sudo apt update && sudo apt upgrade -y
+# 1. 可选系统更新
+if [ "$UPDATE_SYSTEM" = "y" ] || [ "$UPDATE_SYSTEM" = "Y" ]; then
+    echo -e "${YELLOW}📦 正在更新系统...${NC}"
+    sudo apt update && sudo apt upgrade -y
+else
+    echo -e "${BLUE}📦 跳过系统更新（保护其他应用）${NC}"
+    echo -e "${BLUE}仅更新软件包列表...${NC}"
+    sudo apt update
+fi
 
 # 2. 安装Node.js
 echo -e "${YELLOW}🔧 正在安装Node.js 20...${NC}"
@@ -211,6 +223,9 @@ echo "1. 在腾讯云控制台设置安全组规则（开放80、443端口）"
 echo "2. 如果使用域名，请将域名解析到服务器IP: $SERVER_IP"
 echo "3. 访问网站测试功能"
 echo "4. 定期运行更新脚本保持最新版本"
+if [ "$UPDATE_SYSTEM" != "y" ] && [ "$UPDATE_SYSTEM" != "Y" ]; then
+    echo "5. ⚠️  系统未更新，建议在维护窗口期手动更新: sudo apt update && sudo apt upgrade"
+fi
 
 echo
 echo -e "${YELLOW}💡 提示: 如果遇到问题，请查看详细部署文档:${NC}"
