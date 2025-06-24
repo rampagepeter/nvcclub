@@ -179,7 +179,7 @@ nvcclub/
 ## 📞 联系我们
 
 - **项目维护者**: [Your Name](mailto:your.email@example.com)
-- **官方网站**: [NVC中文网](https://nvcchina.org)
+- **官方网站**: [NVC中文网](https://nvcnet.cn)
 - **学习资源**: [NVC学习资料](https://nvcchina.org/resources)
 
 ## 📄 许可证
