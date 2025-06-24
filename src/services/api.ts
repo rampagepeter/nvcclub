@@ -99,6 +99,200 @@ export const activityApi = {
     return mockApiResponses.activities
   },
 
+  // 获取推荐活动列表（最近3场活动）
+  async getRecommendedActivities(): Promise<ApiResponse<Activity[]>> {
+    await new Promise((resolve) => setTimeout(resolve, 400))
+    const allActivities = mockApiResponses.activities.data || []
+    
+    // 首先获取所有即将开始的活动
+    const now = new Date()
+    const upcomingActivities = allActivities
+      .filter(activity => activity.scheduledTime && new Date(activity.scheduledTime) > now)
+    
+    // 优先获取管理员设置的推荐活动
+    const recommendedByAdmin = upcomingActivities
+      .filter(activity => activity.isRecommended === true)
+      .sort((a, b) => {
+        const timeA = a.scheduledTime ? new Date(a.scheduledTime).getTime() : 0
+        const timeB = b.scheduledTime ? new Date(b.scheduledTime).getTime() : 0
+        return timeA - timeB
+      })
+    
+    // 如果推荐活动不足3个，用时间排序的其他活动补充
+    let finalActivities = [...recommendedByAdmin]
+    
+    if (finalActivities.length < 3) {
+      const nonRecommended = upcomingActivities
+        .filter(activity => activity.isRecommended !== true)
+        .sort((a, b) => {
+          const timeA = a.scheduledTime ? new Date(a.scheduledTime).getTime() : 0
+          const timeB = b.scheduledTime ? new Date(b.scheduledTime).getTime() : 0
+          return timeA - timeB
+        })
+      
+      // 补充到3个
+      const needed = 3 - finalActivities.length
+      finalActivities = [...finalActivities, ...nonRecommended.slice(0, needed)]
+    } else {
+      // 如果推荐活动超过3个，只取前3个
+      finalActivities = finalActivities.slice(0, 3)
+    }
+    
+    return {
+      success: true,
+      data: finalActivities,
+      message: '获取推荐活动成功'
+    }
+  },
+
+  // 获取活动详情
+  async getActivityById(activityId: string): Promise<ApiResponse<Activity>> {
+    await new Promise((resolve) => setTimeout(resolve, 400))
+    
+    // 注意：这里应该从 mockApiResponses.activities.data 中查找
+    // 因为这个数组会被 registerActivity 和 unregisterActivity 修改
+    const allActivities = mockApiResponses.activities.data || []
+    const activity = allActivities.find(a => a.activityId === activityId)
+    
+    if (!activity) {
+      return {
+        success: false,
+        message: '活动不存在'
+      }
+    }
+    
+    // 返回找到的活动（包含最新的参与者信息）
+    return {
+      success: true,
+      data: activity,
+      message: '获取活动详情成功'
+    }
+  },
+
+  // 报名参加活动
+  async registerActivity(activityId: string, userId: string): Promise<ApiResponse> {
+    await new Promise((resolve) => setTimeout(resolve, 600))
+    
+    // 更新mock数据中的参与者列表
+    const activities = mockApiResponses.activities.data || []
+    const activityIndex = activities.findIndex(a => a.activityId === activityId)
+    
+    if (activityIndex !== -1) {
+      const activity = activities[activityIndex]
+      
+      // 检查是否已经报名
+      const isAlreadyRegistered = activity.participants?.some(p => p.userId === userId)
+      if (isAlreadyRegistered) {
+        return {
+          success: false,
+          message: '您已经报名了这个活动'
+        }
+      }
+      
+      // 添加用户到参与者列表
+      if (!activity.participants) {
+        activity.participants = []
+      }
+      
+      // 获取当前登录用户信息
+      const token = localStorage.getItem('accessToken')
+      const isAdmin = token?.includes('admin')
+      const currentUser = isAdmin ? mockApiResponses.adminLogin.data.user : mockApiResponses.login.data.user
+      
+      activity.participants.push({
+        userId: userId,
+        userName: currentUser.nickname,
+        userAvatar: currentUser.avatarUrl,
+        registeredAt: new Date(),
+        status: 'registered',
+        xpEarned: 0,
+        badgesEarned: [],
+      })
+      
+      // 更新报名人数
+      activity.registeredCount = activity.participants.length
+      
+      return {
+        success: true,
+        message: '报名成功！',
+        data: { activityId, userId }
+      }
+    } else {
+      return {
+        success: false,
+        message: '活动不存在'
+      }
+    }
+  },
+
+  // 取消报名
+  async unregisterActivity(activityId: string, userId: string): Promise<ApiResponse> {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    
+    // 更新mock数据中的参与者列表
+    const activities = mockApiResponses.activities.data || []
+    const activityIndex = activities.findIndex(a => a.activityId === activityId)
+    
+    if (activityIndex !== -1) {
+      const activity = activities[activityIndex]
+      
+      if (activity.participants) {
+        // 从参与者列表中移除用户
+        const participantIndex = activity.participants.findIndex(p => p.userId === userId)
+        if (participantIndex !== -1) {
+          activity.participants.splice(participantIndex, 1)
+          // 更新报名人数
+          activity.registeredCount = activity.participants.length
+          
+          return {
+            success: true,
+            message: '取消报名成功',
+            data: { activityId, userId }
+          }
+        } else {
+          return {
+            success: false,
+            message: '您还没有报名这个活动'
+          }
+        }
+      } else {
+        return {
+          success: false,
+          message: '您还没有报名这个活动'
+        }
+      }
+    } else {
+      return {
+        success: false,
+        message: '活动不存在'
+      }
+    }
+  },
+
+  // 更新活动推荐状态
+  async updateActivityRecommendation(activityId: string, isRecommended: boolean): Promise<ApiResponse> {
+    await new Promise((resolve) => setTimeout(resolve, 400))
+    
+    // 更新mock数据中的推荐状态
+    const activities = mockApiResponses.activities.data || []
+    const activityIndex = activities.findIndex(a => a.activityId === activityId)
+    
+    if (activityIndex !== -1) {
+      activities[activityIndex].isRecommended = isRecommended
+      
+      return {
+        success: true,
+        message: `${isRecommended ? '设为推荐' : '取消推荐'}成功`,
+        data: activities[activityIndex]
+      }
+    } else {
+      return {
+        success: false,
+        message: '活动不存在'
+      }
+    }
+  },
+
   // 参与活动
   async joinActivity(activityId: string): Promise<ApiResponse> {
     await new Promise((resolve) => setTimeout(resolve, 600))
