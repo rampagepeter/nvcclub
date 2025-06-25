@@ -340,36 +340,36 @@ const handleLogin = async () => {
   }
 }
 
-/* 响应式设计 - 兼容性优化版本 */
+/* 响应式设计 - 优化PC端宽度 */
 @media (min-width: 768px) {
   .login-card {
-    max-width: 650px; /* 直接使用较大的固定值 */
-    width: 65vw; /* 使用65%视口宽度 */
+    max-width: 480px; /* 减小平板端宽度 */
+    width: 50vw; /* 使用50%视口宽度 */
     padding: 48px;
   }
 }
 
 @media (min-width: 1024px) {
   .login-card {
-    max-width: 750px; /* 直接使用较大的固定值 */
-    width: 60vw; /* 使用60%视口宽度 */
-    padding: 52px;
+    max-width: 420px; /* 减小桌面端宽度 */
+    width: 35vw; /* 使用35%视口宽度 */
+    padding: 48px;
   }
 }
 
 @media (min-width: 1200px) {
   .login-card {
-    max-width: 900px; /* 直接使用较大的固定值 */
-    width: 55vw; /* 使用55%视口宽度 */
-    padding: 56px;
+    max-width: 440px; /* 稍微增加一点宽度保持舒适 */
+    width: 30vw; /* 使用30%视口宽度 */
+    padding: 52px;
   }
 }
 
 @media (min-width: 1600px) {
   .login-card {
-    max-width: 1000px; /* 直接使用较大的固定值 */
-    width: 50vw; /* 使用50%视口宽度 */
-    padding: 64px;
+    max-width: 460px; /* 超宽屏时适当增加 */
+    width: 25vw; /* 使用25%视口宽度 */
+    padding: 56px;
   }
 }
 

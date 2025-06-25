@@ -1,176 +1,245 @@
-# 🚀 NVC成长乐园 - 部署指南
+# 🚀 NVC成长乐园部署指南
 
-## 📋 部署概述
+本指南将帮助您在不同平台上部署NVC成长乐园项目。
 
-本项目支持多种部署方式，包括 Vercel、Netlify 等现代化静态网站托管平台。
+## 📋 前提条件
 
-## 🛠️ 构建配置
+- Node.js 20.x 或更高版本
+- npm 9.x 或更高版本
+- Git
+
+## 🌐 GitHub仓库信息
+
+- **项目地址**: https://github.com/rampagepeter/nvcclub
+- **主分支**: master
+- **项目状态**: ✅ 生产就绪
+
+## 🎯 平台部署选项
+
+### 1. Vercel (推荐)
+
+#### 一键部署
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/rampagepeter/nvcclub)
+
+#### 手动部署步骤
+1. 登录 [Vercel](https://vercel.com)
+2. 点击 "New Project"
+3. 导入GitHub仓库: `https://github.com/rampagepeter/nvcclub`
+4. 配置构建设置：
+   - Framework Preset: `Vue`
+   - Build Command: `npm run build:prod`
+   - Output Directory: `dist`
+5. 点击 "Deploy"
+
+### 2. Netlify
+
+#### 一键部署
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/rampagepeter/nvcclub)
+
+#### 手动部署步骤
+1. 登录 [Netlify](https://app.netlify.com)
+2. 点击 "New site from Git"
+3. 选择GitHub并连接仓库: `rampagepeter/nvcclub`
+4. 配置构建设置：
+   - Branch: `master`
+   - Build command: `npm run build:prod`
+   - Publish directory: `dist`
+5. 点击 "Deploy site"
+
+### 3. GitHub Pages
+
+项目已配置GitHub Actions自动部署到GitHub Pages。
+
+#### 启用GitHub Pages
+1. 进入项目仓库 Settings
+2. 滚动到 "Pages" 部分
+3. Source 选择 "GitHub Actions"
+4. 推送代码到master分支即可自动部署
+
+访问地址: `https://rampagepeter.github.io/nvcclub/`
+
+### 4. 腾讯云服务器
+
+#### Ubuntu/Debian 系统一键部署
+```bash
+wget https://raw.githubusercontent.com/rampagepeter/nvcclub/master/tencent-deploy.sh
+bash tencent-deploy.sh
+```
+
+#### CentOS/RHEL 系统一键部署
+```bash
+wget https://raw.githubusercontent.com/rampagepeter/nvcclub/master/tencent-deploy-centos.sh
+bash tencent-deploy-centos.sh
+```
+
+详细说明请参考 [腾讯云部署指南](./TENCENT_CLOUD_DEPLOYMENT.md)
+
+## 🔧 本地开发部署
+
+### 快速开始
+```bash
+# 1. 克隆项目
+git clone https://github.com/rampagepeter/nvcclub.git
+cd nvcclub
+
+# 2. 安装依赖
+npm install
+
+# 3. 启动开发服务器
+npm run dev
+
+# 4. 访问应用
+# 在浏览器中打开 http://localhost:5173
+```
 
 ### 生产环境构建
 ```bash
+# 生产环境构建
+npm run build:prod
+
+# 预览生产版本
+npm run preview:prod
+
+# 构建分析
+npm run build:analyze
+```
+
+## ⚙️ 环境变量配置
+
+### 创建环境变量文件
+```bash
+# 复制环境变量模板
+cp .env.example .env
+
+# 编辑环境变量
+vim .env
+```
+
+### 环境变量说明
+```env
+# 应用配置
+VITE_APP_TITLE=NVC成长乐园
+VITE_APP_DESCRIPTION=NVC中文网年度会员计划
+
+# API配置
+VITE_API_BASE_URL=https://api.nvcclub.com
+VITE_UPLOAD_URL=https://api.nvcclub.com/upload
+
+# 功能开关
+VITE_ENABLE_REGISTRATION=true
+VITE_ENABLE_MOCK_API=false
+
+# 第三方服务
+VITE_SENTRY_DSN=your_sentry_dsn
+VITE_ANALYTICS_ID=your_analytics_id
+```
+
+## 🔐 安全配置
+
+### HTTPS配置
+所有生产环境部署都应启用HTTPS：
+
+- **Vercel**: 自动配置HTTPS
+- **Netlify**: 自动配置HTTPS
+- **腾讯云**: 脚本支持Let's Encrypt自动申请SSL证书
+- **GitHub Pages**: 自动配置HTTPS
+
+### 安全头部
+项目已配置必要的安全头部：
+- Content Security Policy (CSP)
+- X-Frame-Options
+- X-XSS-Protection
+- X-Content-Type-Options
+- Referrer-Policy
+
+## 📊 性能优化
+
+### 构建优化
+- ✅ 代码分割和懒加载
+- ✅ Tree Shaking去除死代码
+- ✅ 资源压缩和缓存
+- ✅ 图片优化和懒加载
+
+### CDN配置
+推荐使用CDN加速静态资源：
+- Vercel: 内置CDN
+- Netlify: 内置CDN  
+- 腾讯云: 可配置腾讯云CDN
+
+## 🐛 故障排除
+
+### 常见问题
+
+#### 1. 构建失败
+```bash
+# 清除依赖并重新安装
+rm -rf node_modules package-lock.json
+npm install
+
+# 检查Node.js版本
+node --version  # 应为20.x或更高
+```
+
+#### 2. 路由404错误
+确保部署平台配置了SPA路由重写规则：
+- Vercel: 已在 `vercel.json` 中配置
+- Netlify: 已在 `netlify.toml` 中配置
+- 其他平台: 需手动配置重写规则
+
+#### 3. 环境变量不生效
+- 确保环境变量以 `VITE_` 开头
+- 重新构建项目
+- 检查部署平台的环境变量设置
+
+## 📈 监控和维护
+
+### 性能监控
+- 使用浏览器开发者工具监控性能
+- 定期运行Lighthouse性能测试
+- 监控构建大小变化
+
+### 错误监控
+- 配置Sentry等错误监控服务
+- 查看浏览器控制台错误
+- 监控API响应状态
+
+### 更新维护
+```bash
+# 拉取最新代码
+git pull origin master
+
+# 更新依赖
+npm update
+
+# 重新构建和部署
 npm run build:prod
 ```
 
-### 本地预览生产构建
-```bash
-npm run preview:prod
-```
+## 🔄 CI/CD工作流
 
-## 🌐 支持的部署平台
+项目包含GitHub Actions工作流，支持：
+- ✅ 自动构建和测试
+- ✅ 多平台部署
+- ✅ 依赖缓存优化
+- ✅ 构建产物分析
 
-### 1. Vercel 部署 (推荐)
-
-#### 手动部署
-1. 在 Vercel 官网创建账户
-2. 连接 GitHub 仓库
-3. 配置构建设置：
-   - Framework Preset: `Vite`
-   - Build Command: `npm run build:prod`
-   - Output Directory: `dist`
-   - Install Command: `npm ci`
-
-#### 自动部署 (CI/CD)
-1. 在 GitHub 仓库设置中添加以下 Secrets：
-   - `VERCEL_TOKEN`: Vercel API Token
-   - `VERCEL_ORG_ID`: 组织 ID
-   - `VERCEL_PROJECT_ID`: 项目 ID
-
-2. 推送代码到 `main` 分支将自动触发部署
-
-### 2. Netlify 部署
-
-#### 手动部署
-1. 在 Netlify 官网创建账户
-2. 拖拽 `dist` 文件夹到 Netlify 部署区域
-
-#### 自动部署 (CI/CD)
-1. 连接 GitHub 仓库
-2. 配置构建设置：
-   - Build command: `npm run build:prod`
-   - Publish directory: `dist`
-
-3. 或在 GitHub Secrets 中添加：
-   - `NETLIFY_SITE_ID`: 站点 ID
-   - `NETLIFY_AUTH_TOKEN`: 认证令牌
-
-### 3. GitHub Pages 部署
-
-#### 配置 GitHub Pages
-1. 在仓库设置中启用 GitHub Pages
-2. 选择 GitHub Actions 作为源
-3. 推送代码将自动构建和部署
-
-#### 更新 base URL (如需要)
-如果部署到子路径，需要在 `vite.config.ts` 中设置：
-```typescript
-export default defineConfig({
-  base: '/your-repo-name/',
-  // ... 其他配置
-})
-```
-
-## 🔧 环境变量配置
-
-### 生产环境变量
-复制 `.env.example` 为 `.env` 并配置：
-
-```env
-# 应用基础配置
-VITE_APP_TITLE=NVC成长乐园
-VITE_APP_VERSION=1.0.0
-VITE_APP_DESCRIPTION=NVC中文网年度会员计划 - 成长乐园
-
-# API配置
-VITE_API_BASE_URL=/api
-
-# 应用配置
-VITE_APP_DEFAULT_LANGUAGE=zh-CN
-VITE_APP_ENABLE_DEVTOOLS=false
-
-# 部署配置
-VITE_APP_BASE_URL=/
-VITE_APP_DEPLOY_ENV=production
-```
-
-## 📊 构建优化
-
-### 当前构建配置
-- **代码分割**: 自动分离 Vue、Element Plus、图表库等
-- **压缩**: 使用 esbuild 进行代码压缩
-- **缓存**: 静态资源设置长期缓存
-- **安全**: 添加安全头部配置
-
-### 构建大小
-```
-总计: ~2.2MB (压缩后 ~575KB)
-- Vue 相关: ~105KB (压缩后 ~41KB)
-- Element Plus: ~1MB (压缩后 ~316KB)
-- 工具库: ~463KB (压缩后 ~157KB)
-- 应用代码: ~其余部分
-```
-
-## 🔒 安全配置
-
-### HTTP 安全头部
-- `X-Content-Type-Options: nosniff`
-- `X-Frame-Options: DENY`
-- `X-XSS-Protection: 1; mode=block`
-- `Referrer-Policy: strict-origin-when-cross-origin`
-
-### 缓存策略
-- 静态资源: 1年缓存 (`max-age=31536000`)
-- HTML文件: 不缓存，确保更新及时生效
-
-## 🧪 部署前检查清单
-
-- [ ] 运行 `npm run lint:check` 确保代码规范
-- [ ] 运行 `npm run type-check` 确保类型安全
-- [ ] 运行 `npm run build:prod` 确保构建成功
-- [ ] 运行 `npm run preview:prod` 测试生产构建
-- [ ] 检查控制台无严重错误
-- [ ] 测试主要功能流程
-- [ ] 验证响应式布局
-- [ ] 检查加载性能
-
-## 📱 性能监控
-
-### 建议的监控指标
-- **FCP (First Contentful Paint)**: < 1.5s
-- **LCP (Largest Contentful Paint)**: < 2.5s
-- **FID (First Input Delay)**: < 100ms
-- **CLS (Cumulative Layout Shift)**: < 0.1
-
-### 性能优化建议
-1. 启用 CDN 加速
-2. 配置服务端压缩 (gzip/brotli)
-3. 监控 Core Web Vitals
-4. 定期检查 bundle 大小
-
-## 🐛 常见问题
-
-### 1. 路由 404 错误
-确保配置了 SPA 回退规则，所有路径都指向 `index.html`
-
-### 2. 静态资源加载失败
-检查 `base` URL 配置是否正确
-
-### 3. 环境变量不生效
-确保环境变量以 `VITE_` 前缀开头
-
-### 4. 构建失败
-- 检查 Node.js 版本 (推荐 20.x)
-- 清理依赖: `npm run clean && npm ci`
-- 检查 TypeScript 类型错误
+工作流文件位置: `.github/workflows/deploy.yml`
 
 ## 📞 技术支持
 
-如遇到部署问题，请检查：
-1. 项目 GitHub Issues
-2. 构建日志详细信息
-3. 浏览器控制台错误
-4. 网络连接状态
+如果在部署过程中遇到问题：
+
+1. 查看相关文档：
+   - [腾讯云部署指南](./TENCENT_CLOUD_DEPLOYMENT.md)
+   - [快速部署指南](./QUICK_TENCENT_DEPLOY.md)
+   - [构建分析报告](./BUILD_ANALYSIS.md)
+
+2. 检查系统要求和环境配置
+
+3. 在GitHub提交Issue: https://github.com/rampagepeter/nvcclub/issues
 
 ---
 
-**最后更新**: 2024年12月24日  
-**文档版本**: 1.0.0 
+**部署成功后，您的NVC成长乐园就可以为用户提供服务了！** 🎉
+
+记得定期更新代码和监控系统状态！ 

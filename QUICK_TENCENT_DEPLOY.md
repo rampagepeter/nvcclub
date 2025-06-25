@@ -18,6 +18,12 @@
    - 公网IP：勾选"免费分配独立公网IP"
    - 安全组：选择"放通全部端口"或自定义开放22,80,443端口
 
+## 🌐 GitHub项目信息
+
+- **项目地址**: https://github.com/rampagepeter/nvcclub
+- **主分支**: master
+- **部署脚本**: 已包含在项目中
+
 ## 🌟 一键部署
 
 ### 步骤1：连接服务器
@@ -39,24 +45,28 @@ su - nvc
 
 ### 步骤3：下载并运行部署脚本
 ```bash
-# 下载部署脚本
+# Ubuntu/Debian 系统（推荐）
 wget https://raw.githubusercontent.com/rampagepeter/nvcclub/master/tencent-deploy.sh
+bash tencent-deploy.sh
 
-# 或者使用curl
+# CentOS/RHEL 系统
+wget https://raw.githubusercontent.com/rampagepeter/nvcclub/master/tencent-deploy-centos.sh
+bash tencent-deploy-centos.sh
+
+# 或者使用curl下载
 curl -O https://raw.githubusercontent.com/rampagepeter/nvcclub/master/tencent-deploy.sh
-
-# 运行部署脚本
 bash tencent-deploy.sh
 ```
 
 ### 步骤4：填写配置信息
 脚本会询问：
-1. **域名**: 如果有域名就填写（如：nvcclub.com），没有就回车跳过
-2. **安装目录**: 默认 `/var/www/nvcclub`，直接回车使用默认值
+1. **系统更新**: 是否更新系统（y/N，默认不更新，保护其他应用）
+2. **域名**: 如果有域名就填写（如：nvcclub.com），没有就回车跳过
+3. **安装目录**: 默认 `/var/www/nvcclub`，直接回车使用默认值
 
 ### 步骤5：等待自动安装
 脚本会自动完成：
-- ✅ 系统更新
+- ✅ 系统更新（可选）
 - ✅ 安装Node.js 20
 - ✅ 安装Nginx
 - ✅ 克隆项目代码
@@ -112,7 +122,7 @@ bash tencent-deploy.sh
 
 ### 更新项目
 ```bash
-# 运行更新脚本
+# 运行自动更新脚本
 /var/www/nvcclub/update.sh
 ```
 
@@ -134,6 +144,24 @@ sudo tail -f /var/log/nginx/error.log
 sudo systemctl restart nginx
 
 # 重新加载Nginx配置
+sudo systemctl reload nginx
+```
+
+### 手动更新项目
+```bash
+# 进入项目目录
+cd /var/www/nvcclub
+
+# 拉取最新代码
+git pull origin master
+
+# 安装依赖
+npm ci
+
+# 重新构建
+npm run build:prod
+
+# 重启Nginx
 sudo systemctl reload nginx
 ```
 
@@ -161,6 +189,14 @@ cd /var/www/nvcclub
 npm install
 npm run build:prod
 sudo systemctl reload nginx
+```
+
+### 5. Git拉取失败
+```bash
+# 重新设置Git远程地址
+cd /var/www/nvcclub
+git remote set-url origin https://github.com/rampagepeter/nvcclub.git
+git pull origin master
 ```
 
 ## 💡 性能优化建议
@@ -204,6 +240,13 @@ echo "0 3 * * * /home/backup.sh" | crontab -
 2. 检查系统日志：`sudo journalctl -xe`
 3. 联系腾讯云技术支持
 4. 在GitHub提交issue：https://github.com/rampagepeter/nvcclub/issues
+
+## 🔗 相关链接
+
+- **项目GitHub**: https://github.com/rampagepeter/nvcclub
+- **NVC中文网**: https://nvcnet.cn
+- **详细部署文档**: [TENCENT_CLOUD_DEPLOYMENT.md](./TENCENT_CLOUD_DEPLOYMENT.md)
+- **完整部署指南**: [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ---
 

@@ -34,8 +34,10 @@ export interface Activity {
   type: 'EmpathyStation' | 'ThemeSalon' | 'LifeGrowth'
   title: string
   description: string
+  content?: string // 活动详细内容
   scheduledTime?: Date
   durationInMinutes?: number
+  duration?: string // 显示用的时长文本
   xpReward: number
   frequency: 'daily' | 'weekly' | 'monthly' | 'quarterly'
   location?: string
@@ -43,6 +45,9 @@ export interface Activity {
   capacity?: number
   registeredCount?: number
   status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled'
+  participants?: ActivityParticipant[] // 参与者列表
+  startTime?: string // 兼容字段，格式化的时间字符串
+  isRecommended?: boolean // 是否为管理员推荐活动
 }
 
 // 用户活动日志

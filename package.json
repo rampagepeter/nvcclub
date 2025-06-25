@@ -1,8 +1,27 @@
 {
-  "name": "nvc-garden",
+  "name": "nvcclub",
   "version": "1.0.0",
+  "description": "NVC成长乐园 - 专为NVC中文网年度会员设计的专属游戏化成长平台",
   "private": true,
   "type": "module",
+  "homepage": "https://github.com/rampagepeter/nvcclub",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rampagepeter/nvcclub.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rampagepeter/nvcclub/issues"
+  },
+  "author": "NVC中文网技术团队",
+  "license": "MIT",
+  "keywords": [
+    "NVC",
+    "非暴力沟通",
+    "Vue3",
+    "TypeScript",
+    "成长平台",
+    "同理心"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",

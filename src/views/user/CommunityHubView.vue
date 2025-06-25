@@ -250,10 +250,9 @@ const loadSidebarData = async () => {
     }
 
     // 加载推荐活动
-    const activitiesResponse = await activityApi.getActivities()
+    const activitiesResponse = await activityApi.getRecommendedActivities()
     if (activitiesResponse.success) {
-      const activities = activitiesResponse.data || []
-      recommendedActivities.value = activities.slice(0, 3)
+      recommendedActivities.value = activitiesResponse.data || []
     }
 
     // 模拟活跃用户数据

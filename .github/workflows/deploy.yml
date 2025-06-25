@@ -2,9 +2,9 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ master ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ master ]
 
 jobs:
   build-and-test:
@@ -50,7 +50,7 @@ jobs:
   deploy-vercel:
     needs: build-and-test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     
     steps:
     - name: Checkout code
@@ -73,7 +73,7 @@ jobs:
   deploy-netlify:
     needs: build-and-test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     
     steps:
     - name: Checkout code

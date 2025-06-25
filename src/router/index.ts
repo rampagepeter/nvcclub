@@ -71,6 +71,12 @@ const router = createRouter({
       component: () => import('@/views/user/CommunityHubView.vue'),
       meta: { requiresAuth: true, role: 'user' },
     },
+    {
+      path: '/user/activity/:id',
+      name: 'ActivityDetail',
+      component: () => import('@/views/user/ActivityDetailView.vue'),
+      meta: { requiresAuth: true, role: 'user' },
+    },
 
     // 兼容旧路径的重定向
     {
@@ -141,6 +147,12 @@ const router = createRouter({
       path: '/admin/settings',
       name: 'AdminSystemSettings',
       component: () => import('@/views/admin/AdminSystemSettingsView.vue'),
+      meta: { requiresAuth: true, role: 'admin' },
+    },
+    {
+      path: '/admin/activities',
+      name: 'AdminActivityManagement',
+      component: () => import('@/views/admin/AdminActivityManagementView.vue'),
       meta: { requiresAuth: true, role: 'admin' },
     },
 

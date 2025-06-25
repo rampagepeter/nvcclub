@@ -127,7 +127,7 @@ import { activityApi } from '@/services/api'
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import type { Activity } from '@/types'
+import type { Activity, ActivityParticipant } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -142,7 +142,7 @@ const activity = ref<Activity | null>(null)
 // 计算属性
 const isRegistered = computed(() => {
   if (!activity.value || !authStore.user) return false
-  return activity.value.participants?.some(p => p.userId === authStore.user?.userId) || false
+  return activity.value.participants?.some((p: ActivityParticipant) => p.userId === authStore.user?.userId) || false
 })
 
 // 方法
@@ -184,7 +184,7 @@ const getFrequencyText = (frequency: string) => {
   return frequencyMap[frequency] || frequency
 }
 
-const formatDateTime = (dateString: string | Date) => {
+const formatDateTime = (dateString: string | Date | undefined) => {
   if (!dateString) return '-'
   
   let date: Date
@@ -268,7 +268,7 @@ const handleRegister = async () => {
       await nextTick()
       
       console.log('🔍 After registration - isRegistered:', isRegistered.value)
-      console.log('🔍 Current participants:', activity.value?.participants?.map(p => ({ userId: p.userId, userName: p.userName })))
+      console.log('🔍 Current participants:', activity.value?.participants?.map((p: ActivityParticipant) => ({ userId: p.userId, userName: p.userName })))
     } else {
       ElMessage.error(response.message || '报名失败')
     }

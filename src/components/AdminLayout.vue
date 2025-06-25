@@ -42,6 +42,15 @@
         </router-link>
 
         <router-link
+          to="/admin/activities"
+          class="nav-item"
+          :class="{ active: $route.name === 'AdminActivityManagement' }"
+        >
+          <el-icon><Calendar /></el-icon>
+          <span>活动管理</span>
+        </router-link>
+
+        <router-link
           to="/admin/moderation"
           class="nav-item"
           :class="{ active: $route.name === 'AdminContentModeration' }"
@@ -115,6 +124,7 @@ import {
   Warning,
   Collection,
   Medal,
+  Calendar,
 } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 

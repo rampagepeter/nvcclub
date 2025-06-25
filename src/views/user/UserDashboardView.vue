@@ -99,7 +99,7 @@
               'theme-salon-card': activity.type === 'ThemeSalon',
               'life-growth-card': activity.type === 'LifeGrowth',
             }"
-            @click="navigateToActivity(activity)"
+            @click="navigateToActivityDetail(activity)"
           >
             <div class="activity-icon">
               {{ getActivityIcon(activity.type) }}
@@ -111,7 +111,7 @@
                 <span class="activity-frequency">{{ getFrequencyText(activity.frequency) }}</span>
                 <div class="activity-action">
                   <el-button type="primary" size="small" class="signup-btn">
-                    {{ getActionText(activity.type) }}
+                    点击查看
                   </el-button>
                 </div>
               </div>
@@ -291,19 +291,21 @@ const navigateToActivity = (activity: Activity) => {
   }
 }
 
+const navigateToActivityDetail = (activity: Activity) => {
+  router.push(`/user/activity/${activity.activityId}`)
+}
+
 const loadDashboardData = async () => {
   loading.value = true
   try {
     // 并行加载数据
     const [activitiesRes, communityRes] = await Promise.all([
-      activityApi.getActivities(),
+      activityApi.getRecommendedActivities(),
       communityApi.getCommunityStats(),
     ])
 
     if (activitiesRes.success) {
-      // 随机选择3个推荐活动
-      const activities = activitiesRes.data || []
-      recommendedActivities.value = activities.slice(0, 3)
+      recommendedActivities.value = activitiesRes.data || []
     }
 
     if (communityRes.success) {

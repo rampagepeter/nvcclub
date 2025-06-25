@@ -15,6 +15,7 @@ import type {
   FeedComment,
   CreatePostRequest,
   CreateCommentRequest,
+  ActivityParticipant,
 } from '@/types'
 import {
   mockApiResponses,
@@ -181,7 +182,7 @@ export const activityApi = {
       const activity = activities[activityIndex]
       
       // 检查是否已经报名
-      const isAlreadyRegistered = activity.participants?.some(p => p.userId === userId)
+      const isAlreadyRegistered = activity.participants?.some((p: ActivityParticipant) => p.userId === userId)
       if (isAlreadyRegistered) {
         return {
           success: false,
@@ -238,7 +239,7 @@ export const activityApi = {
       
       if (activity.participants) {
         // 从参与者列表中移除用户
-        const participantIndex = activity.participants.findIndex(p => p.userId === userId)
+        const participantIndex = activity.participants.findIndex((p: ActivityParticipant) => p.userId === userId)
         if (participantIndex !== -1) {
           activity.participants.splice(participantIndex, 1)
           // 更新报名人数
